@@ -1,5 +1,4 @@
 import "./App.css";
-
 import { Hero, Demo } from "./components";
 
 const App = () => {
