@@ -27,5 +27,5 @@ Before running the project locally, make sure you have the following installed:
 1. **Clone the repository:**
 
    ```bash
-   git clone <repository-url>
+   git clone <https://github.com/Rohitn-2312/Rohit_AI-Powered-Content-Summarizer-Dashboard_Frontend>
    cd react-dashboard
