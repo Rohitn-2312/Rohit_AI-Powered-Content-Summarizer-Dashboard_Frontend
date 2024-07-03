@@ -32,7 +32,7 @@ Before running the project locally, make sure you have the following installed:
 
 
 2. **Install dependencies:**
-
+   
    Using npm:
 
    npm install
@@ -42,16 +42,19 @@ Before running the project locally, make sure you have the following installed:
    yarn install
 
 3. **Set up RapidAPI credentials:**
-   Obtain your RapidAPI key and set it up in your environment or directly in the `services/article.js` file.
+   
+   -Obtain your RapidAPI key and set it up in your environment or directly in the `services/article.js` file.
 
-4. **Run the Application**
+5. **Run the Application**
+   ```bash
    npm start
 
    
-5. **Usage**
-   Enter a URL in the input field and select the length of the summary (Short, Medium, Long).
-   Click on "Summarize" to fetch and display the summarized content.
-   Use the "History" dropdown to view previously summarized articles.
-   Export summarized content using the "Export as Text" or "Export as PDF" buttons.
+7. **Usage**
+
+   - Enter a URL in the input field and select the length of the summary (Short, Medium, Long).
+   - Click on "Summarize" to fetch and display the summarized content.
+   - Use the "History" dropdown to view previously summarized articles.
+   - Export summarized content using the "Export as Text" or "Export as PDF" buttons.
 
    
