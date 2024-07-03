@@ -29,3 +29,16 @@ Before running the project locally, make sure you have the following installed:
    ```bash
    git clone <https://github.com/Rohitn-2312/Rohit_AI-Powered-Content-Summarizer-Dashboard_Frontend>
    cd react-dashboard
+
+
+2. **Install dependencies:**
+
+   Using npm:
+
+   ```bash
+   npm install
+   
+   Using yarn:
+
+   ```bash
+   yarn install
