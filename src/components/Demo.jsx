@@ -81,6 +81,11 @@ const Demo = () => {
     }
   };
 
+  const handleClearHistory = () => {
+    setAllArticles([]);
+    localStorage.removeItem('articles');
+  };
+
   return (
     <section className="mt-16 w-full max-w-xl">
       {/* Search */}
@@ -174,6 +179,12 @@ const Demo = () => {
                       {article.url}
                     </div>
                   ))}
+                  <div
+                    onClick={handleClearHistory}
+                    className="cursor-pointer text-sm text-gray-300 hover:text-white px-3 py-2 mt-2 bg-red-600 rounded-md shadow-lg"
+                  >
+                    Clear History
+                  </div>
                 </div>
               </div>
             )}
