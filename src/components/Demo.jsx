@@ -10,9 +10,9 @@ const Demo = () => {
   });
   const [allArticles, setAllArticles] = useState([]);
   const [copied, setCopied] = useState("");
-  const [selectedLength, setSelectedLength] = useState("Medium"); // Default length selection
-  const [lengthDropdownOpen, setLengthDropdownOpen] = useState(false); // State for length dropdown
-  const [historyDropdownOpen, setHistoryDropdownOpen] = useState(false); // State for history dropdown
+  const [selectedLength, setSelectedLength] = useState("Medium"); 
+  const [lengthDropdownOpen, setLengthDropdownOpen] = useState(false);
+  const [historyDropdownOpen, setHistoryDropdownOpen] = useState(false); 
 
   const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
 
