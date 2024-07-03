@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useLazyGetSummaryQuery } from "../services/article";
-import { copy, linkIcon, loader, tick } from "../assets";
+import { jsPDF } from "jspdf";  // Import jsPDF
+import { copy, linkIcon, loader, tick } from "../assets";  // Add a download icon to assets
 
 const Demo = () => {
   const [article, setArticle] = useState({
     url: "",
     summary: "",
-    length: "short", // Ensure the initial value is "short"
+    length: "short",
   });
   const [allArticles, setAllArticles] = useState([]);
   const [copied, setCopied] = useState("");
@@ -43,6 +44,21 @@ const Demo = () => {
     setCopied(copyUrl);
     navigator.clipboard.writeText(copyUrl);
     setTimeout(() => setCopied(false), 3000);
+  };
+
+  const handleExport = (format) => {
+    if (format === "txt") {
+      const element = document.createElement("a");
+      const file = new Blob([article.summary], { type: "text/plain" });
+      element.href = URL.createObjectURL(file);
+      element.download = "summary.txt";
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
+    } else if (format === "pdf") {
+      const doc = new jsPDF();
+      doc.text(article.summary, 10, 10);
+      doc.save("summary.pdf");
+    }
   };
 
   return (
@@ -107,7 +123,7 @@ const Demo = () => {
       </div>
 
       {/* Display Results */}
-      <div className="my-10 max-w-full flex justify-center items-center">
+      <div className="my-10 max-w-full flex flex-col items-center">
         {isFetching ? (
           <img src={loader} alt="loader" className="w-20 h-20 object-contain" />
         ) : error ? (
@@ -120,7 +136,7 @@ const Demo = () => {
           </p>
         ) : (
           article.summary && (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 w-full">
               <h2 className="font-satoshi font-bold text-gray-300 text-xl">
                 Article <span className="blue_gradient">Summary</span>
               </h2>
@@ -128,6 +144,14 @@ const Demo = () => {
                 <p className="font-inter font-medium text-sm text-gray-400">
                   {article.summary}
                 </p>
+              </div>
+              <div className="flex gap-2 mt-2">
+                <button onClick={() => handleExport("txt")} className="export_btn">
+                  Export as Text
+                </button>
+                <button onClick={() => handleExport("pdf")} className="export_btn">
+                  Export as PDF
+                </button>
               </div>
             </div>
           )
