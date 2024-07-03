@@ -87,9 +87,17 @@ const Demo = () => {
   };
 
   return (
-    <section className="mt-16 w-full max-w-xl">
+    <section className="mt-16 w-full max-w-xl px-4">
+      <h1 className="text-3xl font-bold text-center mb-4">How It <span className="blue_gradient">Works?</span></h1>
+      <div className="text-[#E1DDDD] text-center">
+      <p className="text-l mb-8">1. Enter the URL of the article you want to summarize.</p>
+      <p className="text-l mb-8">2. Choose the length of the summary (Short, Medium, Long).</p>
+      <p className="text-l mb-8">3. Click the submit button to generate the summary.</p>
+      <p className="text-l mb-8">4. View and export the summary in text or PDF format.</p>
+      <p className="text-l mb-8">5. Use the history dropdown to view or clear past summaries.</p>
+      </div>
       {/* Search */}
-      <div className="flex flex-col w-full gap-2">
+      <div className="flex flex-col w-full gap-4">
         <form
           className="relative flex justify-center items-center"
           onSubmit={handleSubmit}
@@ -105,21 +113,21 @@ const Demo = () => {
             value={article.url}
             onChange={(e) => setArticle({ ...article, url: e.target.value })}
             required
-            className="url_input peer"
+            className="url_input peer w-full py-2 pl-10 pr-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500"
           />
           <button
             type="submit"
-            className="submit_btn peer-focus:border-gray-300 peer-focus:text-gray-300"
+            className="submit_btn peer-focus:border-gray-300 peer-focus:text-gray-300 absolute right-0 mr-3"
           >
             ↵
           </button>
         </form>
 
         {/* Length Dropdown */}
-        <div className="relative flex">
-          <div className="relative">
+        <div className="relative flex justify-between items-center gap-4">
+          <div className="relative w-1/2">
             <button
-              className="length_select mt-2 py-2 px-3 bg-gray-900 text-white border border-gray-700 rounded-md shadow-lg"
+              className="length_select py-2 px-3 w-full bg-gray-900 text-white border border-gray-700 rounded-md shadow-lg"
               onClick={() => setLengthDropdownOpen(!lengthDropdownOpen)}
               aria-expanded={lengthDropdownOpen}
               aria-haspopup="true"
@@ -156,9 +164,9 @@ const Demo = () => {
           </div>
 
           {/* History Dropdown */}
-          <div className="relative ml-2">
+          <div className="relative w-1/2">
             <button
-              className="length_select mt-2 py-2 px-3 bg-gray-900 text-white border border-gray-700 rounded-md shadow-lg"
+              className="length_select py-2 px-3 w-full bg-gray-900 text-white border border-gray-700 rounded-md shadow-lg"
               onClick={() => setHistoryDropdownOpen(!historyDropdownOpen)}
               aria-expanded={historyDropdownOpen}
               aria-haspopup="true"
@@ -166,7 +174,7 @@ const Demo = () => {
               History
             </button>
             {historyDropdownOpen && (
-              <div className="absolute mt-1 w-[400px] max-h-[200px] overflow-y-auto rounded-md bg-gray-900 shadow-lg">
+              <div className="absolute mt-1 w-full max-h-[200px] overflow-y-auto rounded-md bg-gray-900 shadow-lg">
                 <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                   {allArticles.map((article, index) => (
                     <div
@@ -193,7 +201,7 @@ const Demo = () => {
 
         {/* Export Section */}
         {article.summary && (
-          <div className="mt-4 flex gap-4">
+          <div className="mt-4 flex gap-4 justify-center">
             <button
               onClick={handleExportText}
               className="export_btn py-2 px-4 bg-blue-600 text-white rounded-md shadow-lg transition-all hover:bg-blue-500"
@@ -227,7 +235,7 @@ const Demo = () => {
                 <h2 className="font-satoshi font-bold text-gray-300 text-xl">
                   Article <span className="blue_gradient">Summary</span>
                 </h2>
-                <div className="summary_box">
+                <div className="summary_box p-4 border border-gray-700 rounded-md bg-gray-900">
                   <p className="font-inter font-medium text-sm text-gray-400">
                     {article.summary}
                   </p>
