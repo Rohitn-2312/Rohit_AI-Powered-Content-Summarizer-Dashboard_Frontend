@@ -26,7 +26,7 @@ Before running the project locally, make sure you have the following installed:
 
 1. **Clone the repository:**
 
-   ```bash
+   
    git clone <https://github.com/Rohitn-2312/Rohit_AI-Powered-Content-Summarizer-Dashboard_Frontend>
    cd react-dashboard
 
@@ -35,10 +35,23 @@ Before running the project locally, make sure you have the following installed:
 
    Using npm:
 
-   ```bash
    npm install
    
    Using yarn:
 
-   ```bash
    yarn install
+
+3. **Set up RapidAPI credentials:**
+   Obtain your RapidAPI key and set it up in your environment or directly in the `services/article.js` file.
+
+4. **Run the Application**
+   npm start
+
+   
+5. **Usage**
+   Enter a URL in the input field and select the length of the summary (Short, Medium, Long).
+   Click on "Summarize" to fetch and display the summarized content.
+   Use the "History" dropdown to view previously summarized articles.
+   Export summarized content using the "Export as Text" or "Export as PDF" buttons.
+
+   
