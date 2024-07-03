@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { useLazyGetSummaryQuery } from "../services/article";
-import { jsPDF } from "jspdf";  // Import jsPDF
-import { copy, linkIcon, loader, tick } from "../assets";  // Add a download icon to assets
+import { copy, linkIcon, loader, tick } from "../assets";
+import jsPDF from "jspdf";
 
 const Demo = () => {
   const [article, setArticle] = useState({
     url: "",
     summary: "",
-    length: "short",
   });
   const [allArticles, setAllArticles] = useState([]);
   const [copied, setCopied] = useState("");
+  const [selectedLength, setSelectedLength] = useState("Medium"); // Default length selection
+  const [lengthDropdownOpen, setLengthDropdownOpen] = useState(false); // State for length dropdown
+  const [historyDropdownOpen, setHistoryDropdownOpen] = useState(false); // State for history dropdown
 
   const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
 
@@ -27,7 +29,7 @@ const Demo = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { data } = await getSummary({ articleUrl: article.url, length: article.length });
+    const { data } = await getSummary({ articleUrl: article.url, length: selectedLength });
 
     if (data?.summary) {
       const newArticle = { ...article, summary: data.summary };
@@ -46,18 +48,36 @@ const Demo = () => {
     setTimeout(() => setCopied(false), 3000);
   };
 
-  const handleExport = (format) => {
-    if (format === "txt") {
-      const element = document.createElement("a");
-      const file = new Blob([article.summary], { type: "text/plain" });
-      element.href = URL.createObjectURL(file);
-      element.download = "summary.txt";
-      document.body.appendChild(element); // Required for this to work in FireFox
-      element.click();
-    } else if (format === "pdf") {
-      const doc = new jsPDF();
-      doc.text(article.summary, 10, 10);
-      doc.save("summary.pdf");
+  const handleHistoryClick = (url) => {
+    setArticle({ ...article, url });
+    setHistoryDropdownOpen(false); // Close history dropdown after selecting a URL
+  };
+
+  const handleLengthSelect = (length) => {
+    setSelectedLength(length);
+    setLengthDropdownOpen(false); // Close length dropdown after selecting a length
+  };
+
+  const handleExportText = () => {
+    if (article.summary) {
+      const textToExport = `Article Summary:\n\n${article.summary}`;
+      const blob = new Blob([textToExport], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "summary.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
+  const handleExportPDF = () => {
+    if (article.summary) {
+      const pdf = new jsPDF();
+      pdf.text(`Article Summary:`, 15, 15);
+      pdf.text(article.summary, 15, 30);
+      pdf.save("summary.pdf");
     }
   };
 
@@ -66,7 +86,7 @@ const Demo = () => {
       {/* Search */}
       <div className="flex flex-col w-full gap-2">
         <form
-          className="relative flex justify-center items-center gap-2"
+          className="relative flex justify-center items-center"
           onSubmit={handleSubmit}
         >
           <img
@@ -89,73 +109,122 @@ const Demo = () => {
             ↵
           </button>
         </form>
-        <select
-          value={article.length}
-          onChange={(e) => setArticle({ ...article, length: e.target.value })}
-          className="length_select"
-        >
-          <option value="short">Short</option>
-          <option value="medium">Medium</option>
-          <option value="long">Long</option>
-        </select>
 
-        {/* Browse URL History */}
-        <div className="flex flex-col gap-1 max-h-60 overflow-y-auto">
-          {allArticles.map((article, index) => (
-            <div
-              key={`link-${index}`}
-              onClick={() => setArticle(article)}
-              className="link_card"
+        {/* Length Dropdown */}
+        <div className="relative flex">
+          <div className="relative">
+            <button
+              className="length_select mt-2 py-2 px-3 bg-gray-900 text-white border border-gray-700 rounded-md shadow-lg"
+              onClick={() => setLengthDropdownOpen(!lengthDropdownOpen)}
+              aria-expanded={lengthDropdownOpen}
+              aria-haspopup="true"
             >
-              <div className="copy_btn" onClick={() => handleCopy(article.url)}>
-                <img
-                  src={copied === article.url ? tick : copy}
-                  alt="copy_icon"
-                  className="w-[40%] h-[40%] object-contain"
-                />
+              {selectedLength}
+            </button>
+            {lengthDropdownOpen && (
+              <div className="absolute mt-1 w-full rounded-md bg-gray-900 shadow-lg">
+                <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                  <div
+                    onClick={() => handleLengthSelect("Short")}
+                    className="cursor-pointer text-sm text-gray-300 hover:text-white px-3 py-2"
+                    role="menuitem"
+                  >
+                    Short
+                  </div>
+                  <div
+                    onClick={() => handleLengthSelect("Medium")}
+                    className="cursor-pointer text-sm text-gray-300 hover:text-white px-3 py-2"
+                    role="menuitem"
+                  >
+                    Medium
+                  </div>
+                  <div
+                    onClick={() => handleLengthSelect("Long")}
+                    className="cursor-pointer text-sm text-gray-300 hover:text-white px-3 py-2"
+                    role="menuitem"
+                  >
+                    Long
+                  </div>
+                </div>
               </div>
-              <p className="flex-1 font-satoshi text-blue-700 font-medium text-sm truncate">
-                {article.url}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+            )}
+          </div>
 
-      {/* Display Results */}
-      <div className="my-10 max-w-full flex flex-col items-center">
-        {isFetching ? (
-          <img src={loader} alt="loader" className="w-20 h-20 object-contain" />
-        ) : error ? (
-          <p className="font-inter font-bold text-white text-center">
-            Well, that wasn&apos;t supposed to happen...
-            <br />
-            <span className="font-satoshi font-normal text-gray-400">
-              {error?.data?.error}
-            </span>
-          </p>
-        ) : (
-          article.summary && (
-            <div className="flex flex-col gap-3 w-full">
-              <h2 className="font-satoshi font-bold text-gray-300 text-xl">
-                Article <span className="blue_gradient">Summary</span>
-              </h2>
-              <div className="summary_box">
-                <p className="font-inter font-medium text-sm text-gray-400">
-                  {article.summary}
-                </p>
+          {/* History Dropdown */}
+          <div className="relative ml-2">
+            <button
+              className="length_select mt-2 py-2 px-3 bg-gray-900 text-white border border-gray-700 rounded-md shadow-lg"
+              onClick={() => setHistoryDropdownOpen(!historyDropdownOpen)}
+              aria-expanded={historyDropdownOpen}
+              aria-haspopup="true"
+            >
+              History
+            </button>
+            {historyDropdownOpen && (
+              <div className="absolute mt-1 w-[400px] max-h-[200px] overflow-y-auto rounded-md bg-gray-900 shadow-lg">
+                <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                  {allArticles.map((article, index) => (
+                    <div
+                      key={`history-${index}`}
+                      onClick={() => handleHistoryClick(article.url)}
+                      className="cursor-pointer text-sm text-gray-300 hover:text-white px-3 py-2 truncate"
+                      title={article.url}
+                      role="menuitem"
+                    >
+                      {article.url}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="flex gap-2 mt-2">
-                <button onClick={() => handleExport("txt")} className="export_btn">
-                  Export as Text
-                </button>
-                <button onClick={() => handleExport("pdf")} className="export_btn">
-                  Export as PDF
-                </button>
-              </div>
-            </div>
-          )
+            )}
+          </div>
+        </div>
+
+        {/* Export Section */}
+        {article.summary && (
+          <div className="mt-4 flex gap-4">
+            <button
+              onClick={handleExportText}
+              className="export_btn py-2 px-4 bg-blue-600 text-white rounded-md shadow-lg transition-all hover:bg-blue-500"
+            >
+              Export as Text
+            </button>
+            <button
+              onClick={handleExportPDF}
+              className="export_btn py-2 px-4 bg-blue-600 text-white rounded-md shadow-lg transition-all hover:bg-blue-500"
+            >
+              Export as PDF
+            </button>
+          </div>
         )}
+
+        {/* Display Results */}
+        <div className="my-10 max-w-full flex justify-center items-center">
+          {isFetching ? (
+            <img src={loader} alt="loader" className="w-20 h-20 object-contain" />
+          ) : error ? (
+            <p className="font-inter font-bold text-white text-center">
+              Well, that wasn&apos;t supposed to happen...
+              <br />
+              <span className="font-satoshi font-normal text-gray-400">
+                {error?.data?.error}
+              </span>
+            </p>
+          ) : (
+            article.summary && (
+              <div className="flex flex-col gap-3">
+                <h2 className="font-satoshi font-bold text-gray-300 text-xl">
+                  Article <span className="blue_gradient">Summary</span>
+                </h2>
+                <div className="summary_box">
+                  <p className="font-inter font-medium text-sm text-gray-400">
+                    {article.summary}
+                  </p>
+                </div>
+              </div>
+            )
+          )}
+        </div>
       </div>
     </section>
   );
