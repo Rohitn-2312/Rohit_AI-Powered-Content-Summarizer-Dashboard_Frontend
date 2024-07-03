@@ -50,7 +50,7 @@ const Demo = () => {
       {/* Search */}
       <div className="flex flex-col w-full gap-2">
         <form
-          className="relative flex justify-center items-center"
+          className="relative flex justify-center items-center gap-2"
           onSubmit={handleSubmit}
         >
           <img
@@ -66,15 +66,6 @@ const Demo = () => {
             required
             className="url_input peer"
           />
-          <select
-            value={article.length}
-            onChange={(e) => setArticle({ ...article, length: e.target.value })}
-            className="length_select peer"
-          >
-            <option value="short">Short</option>
-            <option value="medium">Medium</option>
-            <option value="long">Long</option>
-          </select>
           <button
             type="submit"
             className="submit_btn peer-focus:border-gray-300 peer-focus:text-gray-300"
@@ -82,6 +73,15 @@ const Demo = () => {
             ↵
           </button>
         </form>
+        <select
+          value={article.length}
+          onChange={(e) => setArticle({ ...article, length: e.target.value })}
+          className="length_select"
+        >
+          <option value="short">Short</option>
+          <option value="medium">Medium</option>
+          <option value="long">Long</option>
+        </select>
 
         {/* Browse URL History */}
         <div className="flex flex-col gap-1 max-h-60 overflow-y-auto">

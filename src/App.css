@@ -101,7 +101,7 @@
 }
 
 .length_select {
-  @apply block w-24 rounded-md border border-gray-700 bg-gray-900 text-white py-2.5 pl-2 pr-2 text-sm shadow-lg font-satoshi font-medium focus:border-white focus:outline-none focus:ring-0 mx-2; /* Added margin to space out from the button */
+  @apply w-24 rounded-md border border-gray-700 bg-gray-900 text-white py-2.5 pl-2 pr-2 text-sm shadow-lg font-satoshi font-medium focus:border-white focus:outline-none focus:ring-0;
 }
 
 .submit_btn {
